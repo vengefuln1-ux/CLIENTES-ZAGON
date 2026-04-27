@@ -394,12 +394,14 @@ function renderAll() {
 }
 
 renderAll();
-alert(
-  "Clientes totales: " + clients.length +
-  "\nTécnico: " + clients.filter(c => c.type === "red").length +
-  "\nInstalación: " + clients.filter(c => c.type === "yellow").length +
-  "\nListos: " + clients.filter(c => c.type === "green").length
-);
+function setType(name, type) {
+  const client = clients.find(c => c.name === name);
+  if (client) {
+    client.type = type;
+    save();
+    renderAll();
+  }
+}
 </script>
 
 </body>
