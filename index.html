@@ -4,76 +4,210 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZAGON — Gestión</title>
+
+<!-- FUENTES CORRECTAS -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
-    --bg: #0a0a0a; --surface: #141414; --surface2: #1c1c1c; --border: #272727;
-    --text: #efefef; --muted: #555; --muted2: #888;
-    --red: #e53935; --red-dim: rgba(229,57,53,0.12);
-    --yellow: #fdd835; --yellow-dim: rgba(253,216,53,0.10);
-    --green: #43a047; --green-dim: rgba(67,160,71,0.12);
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: #272727;
+    --text: #efefef;
+    --muted2: #888;
+    --red: #e53935;
+    --yellow: #fdd835;
+    --green: #43a047;
     --blue: #2196f3;
   }
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100dvh; padding-bottom: 100px; }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
 
   /* HEADER */
   .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(10,10,10,0.95); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border); padding: 14px 16px 10px;
-  }
-  .topbar-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 6px; line-height: 1; }
-  .logo span { color: var(--red); }
-  
-  .header-actions { display: flex; gap: 8px; align-items: center; }
-  .btn-map {
-    background: var(--blue); color: white; border: none; border-radius: 6px;
-    padding: 6px 12px; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem;
-    letter-spacing: 1.5px; text-decoration: none; display: flex; align-items: center; gap: 5px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 10px;
   }
 
-  /* SEARCH & STATS */
-  .search-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.85rem; outline: none;
+  .topbar-row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 14px 16px; }
-  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; }
-  .stat .num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; line-height: 1; display: block; }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 6px;
+  }
+
+  .logo span {
+    color: var(--red);
+  }
+
+  .btn-map {
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+  }
+
+  /* SEARCH */
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+    padding: 14px 16px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    display: block;
+  }
+
   .stat.red .num { color: var(--red); }
   .stat.yellow .num { color: var(--yellow); }
   .stat.green .num { color: var(--green); }
-  .stat .lbl { font-size: 0.55rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted2); }
 
-  /* LISTS */
-  .content { padding: 0 16px; }
-  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--muted2); margin: 15px 0 8px; display: flex; justify-content: space-between; }
-  .card {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 6px; border-left: 4px solid transparent;
+  .stat .lbl {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted2);
   }
+
+  /* CONTENT */
+  .content {
+    padding: 0 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--muted2);
+    margin: 18px 0 10px;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 4px solid transparent;
+  }
+
   .card.red { border-left-color: var(--red); }
   .card.yellow { border-left-color: var(--yellow); }
   .card.green { border-left-color: var(--green); }
-  .card-name { font-size: 0.85rem; font-weight: 500; text-transform: uppercase; flex: 1; }
 
-  .pills { display: flex; gap: 4px; }
-  .pill {
-    border: none; border-radius: 4px; padding: 6px 10px; font-size: 0.6rem; font-weight: 800;
-    cursor: pointer; opacity: 0.2; transition: 0.2s;
+  .card-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex: 1;
+    padding-right: 10px;
   }
-  .pill.active { opacity: 1; }
-  .pill-red { background: var(--red); color: #fff; }
-  .pill-yellow { background: var(--yellow); color: #000; }
-  .pill-green { background: var(--green); color: #fff; }
 
+  /* BUTTONS */
+  .pills {
+    display: flex;
+    gap: 4px;
+  }
+
+  .pill {
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: pointer;
+    opacity: 0.25;
+    transition: 0.2s;
+  }
+
+  .pill.active {
+    opacity: 1;
+  }
+
+  .pill-red {
+    background: var(--red);
+    color: white;
+  }
+
+  .pill-yellow {
+    background: var(--yellow);
+    color: black;
+  }
+
+  .pill-green {
+    background: var(--green);
+    color: white;
+  }
+
+  /* FAB */
   .fab {
-    position: fixed; bottom: 25px; right: 20px; width: 56px; height: 56px;
-    border-radius: 50%; background: var(--text); color: var(--bg); border: none;
-    font-size: 2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    position: fixed;
+    bottom: 25px;
+    right: 20px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: white;
+    color: black;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
 </style>
 </head>
@@ -82,115 +216,149 @@
 <div class="topbar">
   <div class="topbar-row1">
     <div class="logo">ZAG<span>O</span>N</div>
-    <div class="header-actions">
-      <a href="https://www.google.com/maps/d/u/0/viewer?mid=1mH6XzW-Xl2Xy1zO87n9K5iZ9xN8" target="_blank" class="btn-map">
-        📍 MAPA
-      </a>
-    </div>
+
+    <a href="https://www.google.com/maps/d/u/0/viewer?mid=1mH6XzW-Xl2Xy1zO87n9K5iZ9xN8" target="_blank" class="btn-map">
+      📍 MAPA
+    </a>
   </div>
-  <input class="search-input" id="search-box" placeholder="BUSCAR CLIENTE..." oninput="renderAll()">
+
+  <input
+    class="search-input"
+    id="search-box"
+    placeholder="BUSCAR CLIENTE..."
+    oninput="renderAll()"
+  >
 </div>
 
 <div class="stats">
-  <div class="stat red"><span class="num" id="cnt-red">0</span><span class="lbl">Técnico</span></div>
-  <div class="stat yellow"><span class="num" id="cnt-yellow">0</span><span class="lbl">Instalación</span></div>
-  <div class="stat green"><span class="num" id="cnt-green">0</span><span class="lbl">Listos</span></div>
+  <div class="stat red">
+    <span class="num" id="cnt-red">0</span>
+    <span class="lbl">Técnico</span>
+  </div>
+
+  <div class="stat yellow">
+    <span class="num" id="cnt-yellow">0</span>
+    <span class="lbl">Instalación</span>
+  </div>
+
+  <div class="stat green">
+    <span class="num" id="cnt-green">0</span>
+    <span class="lbl">Listos</span>
+  </div>
 </div>
 
 <div class="content">
-  <div id="sec-red"><div class="section-title">SERVICIO TÉCNICO <span id="sc-red"></span></div><div id="list-red"></div></div>
-  <div id="sec-yellow"><div class="section-title">INSTALACIONES <span id="sc-yellow"></span></div><div id="list-yellow"></div></div>
-  <div id="sec-green"><div class="section-title">COMPLETADOS <span id="sc-green"></span></div><div id="list-green"></div></div>
+  <div>
+    <div class="section-title">SERVICIO TÉCNICO</div>
+    <div id="list-red"></div>
+  </div>
+
+  <div>
+    <div class="section-title">INSTALACIONES</div>
+    <div id="list-yellow"></div>
+  </div>
+
+  <div>
+    <div class="section-title">COMPLETADOS</div>
+    <div id="list-green"></div>
+  </div>
 </div>
 
-<button class="fab" onclick="alert('Usa el botón mapa para ver ubicaciones o agrega manual aquí.')">+</button>
+<button class="fab" onclick="alert('Aquí puedes agregar nuevos clientes manualmente.')">+</button>
 
 <script>
-// Lista completa integrada del mapa y registros
 const FULL_LIST = [
-  {"name":"CORAZÓN DE MAR","type":"red"},
-  {"name":"EDUARDO GYM","type":"red"},
-  {"name":"ERIKA BATISTA","type":"red"},
-  {"name":"DANIEL TIENDA","type":"red"},
-  {"name":"RAUL MARQUEZ","type":"red"},
-  {"name":"JORGE HERNANDEZ","type":"red"},
-  {"name":"MAYQUE HERRERA","type":"red"},
-  {"name":"BLANCA GONZALEZ","type":"red"},
-  {"name":"JESSICA GONZALEZ","type":"red"},
-  {"name":"TERESA","type":"red"},
-  {"name":"EFRAIN PEDROZA","type":"red"},
-  {"name":"EULOGIO","type":"red"},
-  {"name":"GAMALIEL DE LUNA","type":"red"},
-  {"name":"RENE GUTIERREZ","type":"red"},
-  {"name":"JOSE GONZALEZ","type":"red"},
-  {"name":"MELLISA LOPEZ","type":"red"},
-  {"name":"HELEODORO CERVANTES","type":"red"},
-  {"name":"ROBERTO ALVARADO","type":"red"},
-  {"name":"MAYCO","type":"red"},
-  {"name":"JUANA CARMENTA","type":"red"},
-  {"name":"OKTREE","type":"red"},
-  {"name":"MARTIN CAMION","type":"red"},
-  {"name":"CAWITOS","type":"red"},
-  {"name":"ULISES ALSET","type":"red"},
-  {"name":"PEDRO GARCIA","type":"red"},
-  {"name":"EVA RAMIREZ","type":"red"},
-  {"name":"TAYRON","type":"red"},
-  {"name":"FELIPE MUÑOZ 2","type":"red"},
-  {"name":"RICARDO MARQUEZ","type":"red"},
-  {"name":"EMANUEL JIMENEZ","type":"red"},
-  {"name":"RAMON REYES 2","type":"red"},
-  {"name":"MELA","type":"red"},
-  {"name":"PABLO RAMIREZ","type":"red"},
-  {"name":"KIKO","type":"red"},
-  {"name":"JESUS MUÑOZ 1","type":"red"},
-  {"name":"HIJOS DE JOSE PADILLA","type":"red"},
-  {"name":"GALGO","type":"red"},
-  {"name":"COMIDA ALMA","type":"red"},
-  {"name":"FELIPE NORIEGA","type":"yellow"},
-  {"name":"TONO CONCRETOS","type":"yellow"},
-  {"name":"OSCAR BECCERRA 4","type":"yellow"},
-  {"name":"JOSE PADILLA","type":"yellow"},
-  {"name":"BERTHA ALICIA","type":"green"}
+  { name: "CORAZÓN DE MAR", type: "red" },
+  { name: "EDUARDO GYM", type: "red" },
+  { name: "ERIKA BATISTA", type: "red" },
+  { name: "DANIEL TIENDA", type: "red" },
+  { name: "RAUL MARQUEZ", type: "red" },
+  { name: "JORGE HERNANDEZ", type: "red" },
+  { name: "MAYQUE HERRERA", type: "red" },
+  { name: "BLANCA GONZALEZ", type: "red" },
+  { name: "JESSICA GONZALEZ", type: "red" },
+  { name: "TERESA", type: "red" },
+  { name: "FELIPE NORIEGA", type: "yellow" },
+  { name: "TONO CONCRETOS", type: "yellow" },
+  { name: "OSCAR BECCERRA 4", type: "yellow" },
+  { name: "JOSE PADILLA", type: "yellow" },
+  { name: "BERTHA ALICIA", type: "green" }
 ];
 
-let clients = JSON.parse(localStorage.getItem('zagon_v5')) || FULL_LIST;
+let clients = JSON.parse(localStorage.getItem("zagon_v5")) || FULL_LIST;
 
-function save() { localStorage.setItem('zagon_v5', JSON.stringify(clients)); }
+function save() {
+  localStorage.setItem("zagon_v5", JSON.stringify(clients));
+}
 
 function setType(name, type) {
-  const c = clients.find(x => x.name === name);
-  if (c) { c.type = type; save(); renderAll(); }
+  const client = clients.find(c => c.name === name);
+  if (client) {
+    client.type = type;
+    save();
+    renderAll();
+  }
+}
+
+function createCard(client) {
+  const card = document.createElement("div");
+  card.className = `card ${client.type}`;
+
+  card.innerHTML = `
+    <div class="card-name">${client.name}</div>
+    <div class="pills">
+      <button class="pill pill-red ${client.type === "red" ? "active" : ""}"
+        onclick='setType(${JSON.stringify(client.name)}, "red")'>
+        TÉC
+      </button>
+
+      <button class="pill pill-yellow ${client.type === "yellow" ? "active" : ""}"
+        onclick='setType(${JSON.stringify(client.name)}, "yellow")'>
+        INS
+      </button>
+
+      <button class="pill pill-green ${client.type === "green" ? "active" : ""}"
+        onclick='setType(${JSON.stringify(client.name)}, "green")'>
+        ✓
+      </button>
+    </div>
+  `;
+
+  return card;
 }
 
 function renderAll() {
-  const search = document.getElementById('search-box').value.trim().toUpperCase();
-  const lists = { red: document.getElementById('list-red'), yellow: document.getElementById('list-yellow'), green: document.getElementById('list-green') };
-  let counts = { red: 0, yellow: 0, green: 0 };
+  const search = document.getElementById("search-box").value.trim().toUpperCase();
 
-  Object.values(lists).forEach(l => l.innerHTML = '');
+  const lists = {
+    red: document.getElementById("list-red"),
+    yellow: document.getElementById("list-yellow"),
+    green: document.getElementById("list-green")
+  };
 
-  clients.forEach(c => {
-    if (search && !c.name.includes(search)) return;
-    counts[c.type]++;
-    const card = document.createElement('div');
-    card.className = `card ${c.type}`;
-    card.innerHTML = `
-      <div class="card-name">${c.name}</div>
-      <div class="pills">
-        <button class="pill pill-red ${c.type==='red'?'active':''}" onclick="setType('${c.name}','red')">TÉC</button>
-        <button class="pill pill-yellow ${c.type==='yellow'?'active':''}" onclick="setType('${c.name}','yellow')">INS</button>
-        <button class="pill pill-green ${c.type==='green'?'active':''}" onclick="setType('${c.name}','green')">✓</button>
-      </div>
-    `;
-    lists[c.type].appendChild(card);
+  let counts = {
+    red: 0,
+    yellow: 0,
+    green: 0
+  };
+
+  Object.values(lists).forEach(list => list.innerHTML = "");
+
+  clients.forEach(client => {
+    if (search && !client.name.includes(search)) return;
+
+    counts[client.type]++;
+
+    lists[client.type].appendChild(createCard(client));
   });
 
-  document.getElementById('cnt-red').textContent = counts.red;
-  document.getElementById('cnt-yellow').textContent = counts.yellow;
-  document.getElementById('cnt-green').textContent = counts.green;
+  document.getElementById("cnt-red").textContent = counts.red;
+  document.getElementById("cnt-yellow").textContent = counts.yellow;
+  document.getElementById("cnt-green").textContent = counts.green;
 }
 
 renderAll();
 </script>
+
 </body>
 </html>
