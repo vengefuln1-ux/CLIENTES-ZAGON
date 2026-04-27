@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAGON — Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: #272727;
+    --text: #efefef;
+    --muted: #555;
+    --muted2: #888;
+    --red: #e53935;
+    --red-dim: rgba(229,57,53,0.12);
+    --yellow: #fdd835;
+    --yellow-dim: rgba(253,216,53,0.10);
+    --green: #43a047;
+    --green-dim: rgba(67,160,71,0.12);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100dvh;
+    padding-bottom: 100px;
+  }
+
+  /* ── HEADER ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 10px;
+  }
+  .topbar-row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 8px;
+    line-height: 1;
+  }
+  .logo span { color: var(--red); }
+  .date-badge {
+    font-size: 0.65rem;
+    color: var(--muted2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    position: relative;
+  }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 0.9rem; pointer-events:none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px 10px 36px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: #444; }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 14px 16px 0;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat.red::before  { background: var(--red); }
+  .stat.yellow::before { background: var(--yellow); }
+  .stat.green::before  { background: var(--green); }
+  .stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    display: block;
+  }
+  .stat.red .num    { color: var(--red); }
+  .stat.yellow .num { color: var(--yellow); }
+  .stat.green .num  { color: var(--green); }
+  .stat .lbl {
+    font-size: 0.58rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted2);
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── FILTER TABS ── */
+  .tabs {
+    display: flex; gap: 6px;
+    padding: 12px 16px 0;
+    overflow-x: auto;
+  }
+  .tab {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted2);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tab.active-all    { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .tab.active-red    { background: var(--red-dim); color: var(--red); border-color: var(--red); }
+  .tab.active-yellow { background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+  .tab.active-green  { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+
+  /* ── CONTENT ── */
+  .content { padding: 16px; }
+
+  .section { margin-bottom: 20px; }
+  .section-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .section-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .dot-red    { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green  { background: var(--green); }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: var(--muted2);
+  }
+  .section-count {
+    margin-left: auto;
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    margin-bottom: 5px;
+    transition: background 0.15s;
+  }
+  .card:active { background: var(--surface2); }
+  .card.red    { border-left-color: var(--red); }
+  .card.yellow { border-left-color: var(--yellow); }
+  .card.green  { border-left-color: var(--green); }
+
+  .card-name {
+    flex: 1;
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .pills { display: flex; gap: 4px; }
+  .pill {
+    border: none; border-radius: 4px;
+    padding: 5px 9px;
+    font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .pill.active { opacity: 1; }
+  .pill:active { transform: scale(0.92); }
+  .pill-red    { background: var(--red); color: white; }
+  .pill-yellow { background: var(--yellow); color: #111; }
+  .pill-green  { background: var(--green); color: white; }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  /* ── FAB ── */
+  .fab {
+    position: fixed; bottom: 22px; right: 18px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    transition: transform 0.15s, background 0.15s;
+    z-index: 200;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 300;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    width: 100%; max-width: 480px;
+    padding: 20px 18px 36px;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    color: var(--muted2);
+  }
+  .modal-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    margin-bottom: 12px;
+  }
+  .modal-input:focus { border-color: #444; }
+
+  .modal-type-row {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .modal-type-btn {
+    flex: 1; border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 8px; padding: 10px 4px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    color: var(--muted2);
+    transition: all 0.15s;
+  }
+  .modal-type-btn.sel-red    { background: var(--red-dim); color: var(--red); border-color: var(--red); }
+  .modal-type-btn.sel-yellow { background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+  .modal-type-btn.sel-green  { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+
+  .modal-actions { display: flex; gap: 8px; }
+  .btn {
+    flex: 1; padding: 12px;
+    border-radius: 8px; border: none;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-cancel { background: var(--surface2); color: var(--muted2); }
+  .btn-add    { background: var(--text); color: var(--bg); }
+  .btn:active { opacity: 0.75; }
+
+  /* ── DELETE HINT ── */
+  .card-name-wrap {
+    flex: 1; display: flex; flex-direction: column; gap: 2px;
+  }
+  .del-btn {
+    display: none;
+    font-size: 0.6rem;
+    color: var(--red);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Barlow', sans-serif;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .card:active .del-btn { display: block; }
+
+  @media (min-width: 480px) {
+    .topbar, .content, .stats, .tabs { max-width: 480px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+    .stats, .tabs { max-width: 480px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row1">
+    <div class="logo">ZAG<span>O</span>N</div>
+    <div class="date-badge" id="fecha"></div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input class="search-input" id="search-box" placeholder="Buscar cliente..." oninput="renderAll()" autocomplete="off">
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat red">
+    <span class="num" id="cnt-red">0</span>
+    <span class="lbl">Técnico</span>
+  </div>
+  <div class="stat yellow">
+    <span class="num" id="cnt-yellow">0</span>
+    <span class="lbl">Instalación</span>
+  </div>
+  <div class="stat green">
+    <span class="num" id="cnt-green">0</span>
+    <span class="lbl">Listos</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active-all" data-filter="all"   onclick="setFilter('all',this)">Todo</button>
+  <button class="tab" data-filter="red"    onclick="setFilter('red',this)">🔴 Técnico</button>
+  <button class="tab" data-filter="yellow" onclick="setFilter('yellow',this)">🟡 Instalación</button>
+  <button class="tab" data-filter="green"  onclick="setFilter('green',this)">🟢 Listos</button>
+</div>
+
+<div class="content">
+  <div class="section" id="sec-red">
+    <div class="section-header">
+      <span class="section-dot dot-red"></span>
+      <span class="section-title">Servicio Técnico</span>
+      <span class="section-count" id="sc-red"></span>
+    </div>
+    <div id="list-red"></div>
+  </div>
+  <div class="section" id="sec-yellow">
+    <div class="section-header">
+      <span class="section-dot dot-yellow"></span>
+      <span class="section-title">Instalación</span>
+      <span class="section-count" id="sc-yellow"></span>
+    </div>
+    <div id="list-yellow"></div>
+  </div>
+  <div class="section" id="sec-green">
+    <div class="section-header">
+      <span class="section-dot dot-green"></span>
+      <span class="section-title">Completados</span>
+      <span class="section-count" id="sc-green"></span>
+    </div>
+    <div id="list-green"></div>
+  </div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">Nuevo Cliente</div>
+    <input class="modal-input" id="new-name" placeholder="Nombre del cliente" autocomplete="off">
+    <div class="modal-type-row">
+      <button class="modal-type-btn sel-red" id="btn-type-red"    onclick="selectType('red')">🔴 Técnico</button>
+      <button class="modal-type-btn"         id="btn-type-yellow" onclick="selectType('yellow')">🟡 Instalación</button>
+      <button class="modal-type-btn"         id="btn-type-green"  onclick="selectType('green')">🟢 Listo</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-add"    onclick="addClient()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_CLIENTS = [
+  {"name":"CORAZON DE MAR","type":"red"},
+  {"name":"FELIPE MUÑOZ 2","type":"red"},
+  {"name":"RICARDO MARQUEZ","type":"red"},
+  {"name":"EMANUEL JIMENEZ","type":"red"},
+  {"name":"RAMON REYES 2","type":"red"},
+  {"name":"MELA","type":"red"},
+  {"name":"PABLO RAMIREZ","type":"red"},
+  {"name":"KIKO","type":"red"},
+  {"name":"JESUS MUÑOZ 1","type":"red"},
+  {"name":"HIJOS DE JOSE PADILLA","type":"red"},
+  {"name":"GALGO","type":"red"},
+  {"name":"COMIDA ALMA","type":"red"},
+  {"name":"EDUARDO GYM","type":"red"},
+  {"name":"ERIKA BATISTA","type":"red"},
+  {"name":"DANIEL TIENDA","type":"red"},
+  {"name":"RAUL MARQUEZ","type":"red"},
+  {"name":"JORGE HERNANDEZ","type":"red"},
+  {"name":"MAYQUE HERRERA","type":"red"},
+  {"name":"BLANCA GONZALEZ","type":"red"},
+  {"name":"JESSICA GONZALEZ","type":"red"},
+  {"name":"TERESA","type":"red"},
+  {"name":"EFRAIN PEDROZA","type":"red"},
+  {"name":"EULOGIO","type":"red"},
+  {"name":"GAMALIEL DE LUNA","type":"red"},
+  {"name":"RENE GUTIERREZ","type":"red"},
+  {"name":"JOSE GONZALEZ","type":"red"},
+  {"name":"MELLISA LOPEZ","type":"red"},
+  {"name":"HELEODORO CERVANTES","type":"red"},
+  {"name":"ROBERTO ALVARADO","type":"red"},
+  {"name":"MAYCO","type":"red"},
+  {"name":"JUANA CARMENTA","type":"red"},
+  {"name":"OKTREE","type":"red"},
+  {"name":"MARTIN CAMION","type":"red"},
+  {"name":"CAWITOS","type":"red"},
+  {"name":"ULISES ALSET","type":"red"},
+  {"name":"PEDRO GARCIA","type":"red"},
+  {"name":"EVA RAMIREZ","type":"red"},
+  {"name":"TAYRON","type":"red"},
+  {"name":"FELIPE NORIEGA","type":"yellow"},
+  {"name":"TONO CONCRETOS","type":"yellow"},
+  {"name":"OSCAR BECCERRA 4","type":"yellow"},
+  {"name":"JOSE PADILLA","type":"yellow"},
+  {"name":"BERTHA ALICIA","type":"green"}
+];
+
+let clients = JSON.parse(localStorage.getItem('zagon_v4') || 'null') || DEFAULT_CLIENTS;
+let activeFilter = 'all';
+let newType = 'red';
+
+function save() {
+  localStorage.setItem('zagon_v4', JSON.stringify(clients));
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
+  el.className = `tab active-${f}`;
+  renderAll();
+}
+
+function setType(name, type) {
+  const c = clients.find(x => x.name === name);
+  if (c) { c.type = type; save(); renderAll(); }
+}
+
+function deleteClient(name) {
+  if (!confirm(`¿Eliminar a ${name}?`)) return;
+  clients = clients.filter(x => x.name !== name);
+  save();
+  renderAll();
+}
+
+function renderAll() {
+  const search = document.getElementById('search-box').value.trim().toUpperCase();
+  const lists  = { red: document.getElementById('list-red'), yellow: document.getElementById('list-yellow'), green: document.getElementById('list-green') };
+  const secs   = { red: document.getElementById('sec-red'), yellow: document.getElementById('sec-yellow'), green: document.getElementById('sec-green') };
+  const scs    = { red: document.getElementById('sc-red'), yellow: document.getElementById('sc-yellow'), green: document.getElementById('sc-green') };
+
+  Object.values(lists).forEach(l => l.innerHTML = '');
+  let counts = { red: 0, yellow: 0, green: 0 };
+
+  clients.forEach(c => {
+    if (search && !c.name.includes(search)) return;
+    if (activeFilter !== 'all' && c.type !== activeFilter) return;
+
+    counts[c.type]++;
+    const card = document.createElement('div');
+    card.className = `card ${c.type}`;
+    const safeName = c.name.replace(/'/g, "\\'");
+    card.innerHTML = `
+      <div class="card-name-wrap">
+        <div class="card-name">${c.name}</div>
+      </div>
+      <div class="pills">
+        <button class="pill pill-red ${c.type==='red'?'active':''}"    onclick="setType('${safeName}','red')">TÉC</button>
+        <button class="pill pill-yellow ${c.type==='yellow'?'active':''}" onclick="setType('${safeName}','yellow')">INS</button>
+        <button class="pill pill-green ${c.type==='green'?'active':''}"  onclick="setType('${safeName}','green')">✓</button>
+      </div>
+    `;
+    let pressTimer;
+    card.addEventListener('pointerdown', () => {
+      pressTimer = setTimeout(() => {
+        deleteClient(c.name);
+      }, 800);
+    });
+    card.addEventListener('pointerup', () => clearTimeout(pressTimer));
+    card.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+
+    lists[c.type].appendChild(card);
+  });
+
+  document.getElementById('cnt-red').textContent    = counts.red;
+  document.getElementById('cnt-yellow').textContent = counts.yellow;
+  document.getElementById('cnt-green').textContent  = counts.green;
+
+  ['red','yellow','green'].forEach(t => {
+    const visible = activeFilter === 'all' || activeFilter === t;
+    secs[t].style.display = visible ? 'block' : 'none';
+    scs[t].textContent = counts[t] > 0 ? counts[t] + ' clientes' : '';
+    if (visible && counts[t] === 0 && !search) {
+      lists[t].innerHTML = `<div class="empty">— Sin clientes —</div>`;
+    }
+  });
+}
+
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-name').focus();
+  selectType('red');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function selectType(t) {
+  newType = t;
+  ['red','yellow','green'].forEach(x => {
+    document.getElementById(`btn-type-${x}`).className = 'modal-type-btn' + (x===t ? ` sel-${x}` : '');
+  });
+}
+
+function addClient() {
+  const name = document.getElementById('new-name').value.trim().toUpperCase();
+  if (!name) { document.getElementById('new-name').focus(); return; }
+  if (clients.find(c => c.name === name)) {
+    alert('Ya existe ese cliente.');
+    return;
+  }
+  clients.push({ name, type: newType });
+  save();
+  closeModal();
+  renderAll();
+}
+
+document.getElementById('new-name').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addClient();
+  if (e.key === 'Escape') closeModal();
+});
+
+const d = new Date();
+document.getElementById('fecha').textContent =
+  d.toLocaleDateString('es-MX', { weekday:'short', day:'numeric', month:'short' }).toUpperCase();
+
+renderAll();
+</script>
+</body>
+</html>
