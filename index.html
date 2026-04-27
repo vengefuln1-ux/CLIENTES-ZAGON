@@ -326,7 +326,13 @@ function setType(name, type) {
     client.type = type;
     save();
     renderAll();
-alert("Clientes cargados: " + clients.length);
+
+alert(
+  "Clientes totales: " + clients.length +
+  "\nTécnico: " + clients.filter(c => c.type === "red").length +
+  "\nInstalación: " + clients.filter(c => c.type === "yellow").length +
+  "\nListos: " + clients.filter(c => c.type === "green").length
+);
   }
 }
 
