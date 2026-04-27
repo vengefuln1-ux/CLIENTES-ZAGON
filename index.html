@@ -285,7 +285,7 @@ const FULL_LIST = [
   { name: "BERTHA ALICIA", type: "green" }
 ];
 
-let clients = JSON.parse(localStorage.getItem("zagon_v5")) || FULL_LIST;
+let clients = FULL_LIST;
 
 function save() {
   localStorage.setItem("zagon_v5", JSON.stringify(clients));
