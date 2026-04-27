@@ -388,6 +388,12 @@ function renderAll() {
 }
 
 renderAll();
+alert(
+  "Clientes totales: " + clients.length +
+  "\nTécnico: " + clients.filter(c => c.type === "red").length +
+  "\nInstalación: " + clients.filter(c => c.type === "yellow").length +
+  "\nListos: " + clients.filter(c => c.type === "green").length
+);
 </script>
 
 </body>
